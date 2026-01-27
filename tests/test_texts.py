@@ -19,9 +19,17 @@ from utils.texts import grup, is_text_same
         ("Ϋδρογόνο", "ΥΔΡΟΓΟΝΟ"),
         ("Ώρα", "ΩΡΑ"),
         ("Δοϊράνη special", "ΔΟΙΡΑΝΗ SPECIAL"),
+        ("ΰ", "Υ"),
     ],
 )
 def test_grup(input_text, expected_output):
+    assert grup(input_text) == expected_output
+
+
+def test_grup_special_characters():
+    input_text = "Ϋ́ Ϊ́"
+    expected_output = "Υ Ι"
+    assert input_text == "Ϋ́ Ϊ́"
     assert grup(input_text) == expected_output
 
 
@@ -40,7 +48,7 @@ def test_grup(input_text, expected_output):
         ("Όμορφος", "ΟΜΟΡΦΟΣ", True),
         ("Ύμνος", "ΥΜΝΟΣ", True),
         ("Ϋδρογόνο", "ΥΔΡΟΓΟΝΟ", True),
-        ("Ώρα", "ΩΡΑ", True),
+        ("Ώρα", "ΩΡά", True),
         ("Δοϊράνη special", "ΔΟΙΡΑΝΗ SPECIAL", True),
         ("Καλημέρα", "Καλησπέρα", False),
         ("Hello", "World", False),

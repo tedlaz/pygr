@@ -118,7 +118,11 @@ def month_specific_days_gr(
 
     :param year: The year as an integer.
     :param month: The month as an integer (1-12).
-    :param wdays: A string representing the weekdays to count (Δ=0, Τ=1, Τρ=2, Π=3, Πρ=4, Σ=5, Κ=6).
+    :param wdays: A string representing the weekdays to count in Greek
+                  e.g. "ΔΕΥΤΕΡΑ-ΠΑΡΑΣΚΕΥΗ" for Monday to Friday
+                  or "ΔΕΥΤΕΡΑ,ΤΕΤΑΡΤΗ,ΠΑΡΑΣΚΕΥΗ" for Monday, Wednesday, and Friday.
+                  οr "ΠΑΡΑΣΚΕΥΗ" for Friday only.
+                  or "ΠΑΡΑΣΚΕΥΗ-ΔΕΥΤΕΡΑ" for Friday, Saturday, Sunday and Monday.
     :return: The count of specified weekdays in the month.
     """
     weekday_map = {
