@@ -1,4 +1,5 @@
 import re
+from calendar import SATURDAY, SUNDAY, monthrange
 from datetime import datetime
 
 
@@ -75,3 +76,74 @@ def delta_hours(date_from: datetime, date_to: datetime) -> float:
 def round_half(hours: float) -> float:
     """Hours rounded to nearest half hour"""
     return round(hours * 2) / 2
+
+
+def month_monday2friday_days(year: int, month: int) -> int:
+    """Calculate the number of working days in a given month, excluding weekends and specified holidays."""
+
+    total_days = monthrange(year, month)[1]
+    working_days = 0
+
+    for day in range(1, total_days + 1):
+        current_date = datetime(year, month, day).date()
+        if current_date.weekday() not in (SATURDAY, SUNDAY):
+            working_days += 1
+
+    return working_days
+
+
+def month_specific_days(year: int, month: int, weekdays: set[int]) -> int:
+    """Calculate the number of specific weekdays in a given month.
+
+    :param year: The year as an integer.
+    :param month: The month as an integer (1-12).
+    :param weekdays: A set of integers representing the weekdays to count (0=Monday, 6=Sunday).
+    :return: The count of specified weekdays in the month.
+    """
+    total_days = monthrange(year, month)[1]
+    specific_days_count = 0
+
+    for day in range(1, total_days + 1):
+        current_date = datetime(year, month, day).date()
+        if current_date.weekday() in weekdays:
+            specific_days_count += 1
+
+    return specific_days_count
+
+
+def month_specific_days_gr(
+    year: int, month: int, wdays: str = "ΔΕΥΤΕΡΑ-ΠΑΡΑΣΚΕΥΗ"
+) -> int:
+    """Calculate the number of specific weekdays in a given month.
+
+    :param year: The year as an integer.
+    :param month: The month as an integer (1-12).
+    :param wdays: A string representing the weekdays to count (Δ=0, Τ=1, Τρ=2, Π=3, Πρ=4, Σ=5, Κ=6).
+    :return: The count of specified weekdays in the month.
+    """
+    weekday_map = {
+        "ΔΕΥΤΕΡΑ": 0,
+        "ΤΡΙΤΗ": 1,
+        "ΤΕΤΑΡΤΗ": 2,
+        "ΠΕΜΠΤΗ": 3,
+        "ΠΑΡΑΣΚΕΥΗ": 4,
+        "ΣΑΒΒΑΤΟ": 5,
+        "ΚΥΡΙΑΚΗ": 6,
+    }
+
+    if "-" in wdays:
+        start_day, end_day = wdays.split("-")
+        start_idx = weekday_map[start_day]
+        end_idx = weekday_map[end_day]
+        if start_idx > end_idx:
+            end_idx += 7
+        weekdays = {i % 7 for i in range(start_idx, end_idx + 1)}
+
+    elif "," in wdays:
+        days = wdays.split(",")
+        weekdays = {weekday_map[day.strip()] for day in days}
+
+    else:
+        weekdays = {weekday_map[wdays.strip()]}
+
+    return month_specific_days(year, month, weekdays)

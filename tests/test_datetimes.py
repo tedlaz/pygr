@@ -10,6 +10,9 @@ from utils.datetimes import (
     is_greek_date,
     iso2gr,
     iso2yearmonth,
+    month_monday2friday_days,
+    month_specific_days,
+    month_specific_days_gr,
     round_half,
 )
 
@@ -117,3 +120,51 @@ def test_delta_hours(date_from, date_to, expected_hours):
 )
 def test_round_half(value, expected_rounded):
     assert round_half(value) == expected_rounded
+
+
+@pytest.mark.parametrize(
+    "year,month,expected",
+    [(2024, 6, 20), (2024, 7, 23), (2024, 8, 22), (2026, 1, 22)],
+)
+def test_month_monday2friday_days(year, month, expected):
+    assert month_monday2friday_days(year, month) == expected
+
+
+@pytest.mark.parametrize(
+    "year,month,weekdays,expected",
+    [
+        (2024, 6, {0}, 4),  # Mondays in June 2024
+        (2024, 7, {1}, 5),  # Tuesdays in July 2024
+        (2024, 8, {2}, 4),  # Wednesdays in August 2024
+        (2026, 1, {3, 4}, 10),  # Thursdays and Fridays in January 2026
+    ],
+)
+def test_month_specific_days(year, month, weekdays, expected):
+    assert month_specific_days(year, month, weekdays) == expected
+
+
+@pytest.mark.parametrize(
+    "year,month,wdays,expected",
+    [
+        (2024, 6, "ΔΕΥΤΕΡΑ", 4),  # Mondays in June 2024
+        (2024, 7, "ΤΡΙΤΗ", 5),  # Tuesdays in July 2024
+        (2024, 8, "ΤΕΤΑΡΤΗ", 4),  # Wednesdays in August 2024
+        (2026, 1, "ΠΕΜΠΤΗ, ΠΑΡΑΣΚΕΥΗ", 10),
+        (2026, 1, "ΔΕΥΤΕΡΑ-ΠΑΡΑΣΚΕΥΗ", 22),
+        (2026, 1, "ΔΕΥΤΕΡΑ,ΠΑΡΑΣΚΕΥΗ", 9),
+        (2026, 1, "ΤΕΤΑΡΤΗ-ΠΑΡΑΣΚΕΥΗ", 14),
+        (2026, 1, "ΤΕΤΑΡΤΗ-ΔΕΥΤΕΡΑ", 27),
+    ],
+)
+def test_month_specific_days_gr(year, month, wdays, expected):
+    assert month_specific_days_gr(year, month, wdays) == expected
+
+
+def test_month_specific_days_gr_default_days():
+    # Default is Monday to Friday
+    assert month_specific_days_gr(2024, 6) == 20  # June 2024 has 20 working weekdays
+
+
+def test_month_specific_days_gr_error():
+    with pytest.raises(KeyError):
+        month_specific_days_gr(2024, 6, "INVALID_DAY")
