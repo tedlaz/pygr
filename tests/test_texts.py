@@ -1,6 +1,6 @@
 import pytest
 
-from utils.texts import grup, is_text_same
+from utils.texts import are_texts_equal, grup
 
 
 @pytest.mark.parametrize(
@@ -55,4 +55,4 @@ def test_grup_special_characters():
     ],
 )
 def test_is_text_same(text1, text2, expected):
-    assert is_text_same(text1, text2) == expected
+    assert are_texts_equal(text1, text2) == expected

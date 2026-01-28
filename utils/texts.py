@@ -26,6 +26,6 @@ def grup(text: str) -> str:
     return "".join(replaces.get(letter, letter) for letter in uptext)
 
 
-def is_text_same(text1: str, text2: str) -> bool:
+def are_texts_equal(text1: str, text2: str) -> bool:
     """A function who compares two strings in a case insensitive way, handling special Greek characters"""
     return grup(text1) == grup(text2)
