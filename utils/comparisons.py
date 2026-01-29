@@ -1,46 +1,26 @@
+# Dictionary mapping operators to their comparison functions
+OPERATORS = {
+    "=": lambda a, b: a == b,
+    "!=": lambda a, b: a != b,
+    "<": lambda a, b: a < b,
+    "<=": lambda a, b: a <= b,
+    ">": lambda a, b: a > b,
+    ">=": lambda a, b: a >= b,
+    "in": lambda a, b: a in b,
+    "any_in": lambda a, b: any(item in b for item in a),
+    "all_in": lambda a, b: all(item in b for item in a),
+    "not in": lambda a, b: a not in b,
+    "contains": lambda a, b: b in a,
+    "not contains": lambda a, b: b not in a,
+    "starts with": lambda a, b: a.startswith(b),
+}
+
+
 def compare_values(operator: str, a, b) -> bool:
     """Compare two values based on the given operator."""
-    if operator == "=":
-        return a == b
-
-    elif operator == "!=":
-        return a != b
-
-    elif operator == "<":
-        return a < b
-
-    elif operator == "<=":
-        return a <= b
-
-    elif operator == ">":
-        return a > b
-
-    elif operator == ">=":
-        return a >= b
-
-    elif operator == "in":
-        return a in b
-
-    elif operator == "any_in":
-        return any(item in b for item in a)
-
-    elif operator == "all_in":
-        return all(item in b for item in a)
-
-    elif operator == "not in":
-        return a not in b
-
-    elif operator == "contains":
-        return b in a
-
-    elif operator == "not contains":
-        return b not in a
-
-    elif operator == "starts with":
-        return a.startswith(b)
-
-    else:
+    if operator not in OPERATORS:
         raise ValueError(f"Unsupported operator: {operator}")
+    return OPERATORS[operator](a, b)
 
 
 def has_attributes(attributes: list, cls: type) -> bool:
@@ -52,3 +32,13 @@ def has_attributes(attributes: list, cls: type) -> bool:
             print(f"Attribute '{attr}' does not exist in {cls.__name__} class.")
             state = False
     return state
+
+
+def is_match(attributes: dict, class_instance: object) -> bool:
+    """Check if the class instance matches all the given attribute conditions."""
+    for key, op_val in attributes.items():
+        operator, value = op_val
+        attribute = getattr(class_instance, key)
+        if compare_values(operator, attribute, value) is False:
+            return False
+    return True
