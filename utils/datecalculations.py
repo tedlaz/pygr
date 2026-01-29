@@ -182,8 +182,14 @@ def do_overlap(from1: datetime, to1: datetime, from2: datetime, to2: datetime) -
 def time_range(trange: str) -> tuple[datetime, datetime]:
     """
     2024-01-01T08:00T16:00 -> 2024-01-01T08:00, 2024-01-01T16:00
+    2024-01-01 09:00 17:00 -> 2024-01-01T09:00, 2024-01-01T17:00
     """
-    dat, tfrom, tto = trange.split("T")
+    if "T" in trange:
+        dat, tfrom, tto = trange.split("T")
+    elif " " in trange:
+        dat, tfrom, tto = trange.split()
+    else:
+        raise ValueError(f"Wrong TimeRange format: {trange}")
     datefrom = date.fromisoformat(dat)
     dateto = date.fromisoformat(dat)
     timefrom = time.fromisoformat(tfrom)
