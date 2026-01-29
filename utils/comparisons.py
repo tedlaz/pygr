@@ -1,4 +1,5 @@
 def compare_values(operator: str, a, b) -> bool:
+    """Compare two values based on the given operator."""
     if operator == "=":
         return a == b
 
@@ -40,3 +41,14 @@ def compare_values(operator: str, a, b) -> bool:
 
     else:
         raise ValueError(f"Unsupported operator: {operator}")
+
+
+def has_attributes(attributes: list, cls: type) -> bool:
+    """Check if the given class has all the specified attributes."""
+    state = True
+    valid_attrs = {f.name for f in cls.__dataclass_fields__.values()}
+    for attr in attributes:
+        if attr not in valid_attrs:
+            print(f"Attribute '{attr}' does not exist in {cls.__name__} class.")
+            state = False
+    return state
