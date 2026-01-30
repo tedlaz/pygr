@@ -9,18 +9,21 @@ OPERATORS = {
     "in": lambda a, b: a in b,
     "any_in": lambda a, b: any(item in b for item in a),
     "all_in": lambda a, b: all(item in b for item in a),
+    "not any_in": lambda a, b: all(item not in b for item in a),
+    "not all_in": lambda a, b: any(item not in b for item in a),
     "not in": lambda a, b: a not in b,
     "contains": lambda a, b: b in a,
     "not contains": lambda a, b: b not in a,
     "starts with": lambda a, b: a.startswith(b),
+    "ends with": lambda a, b: a.endswith(b),
 }
 
 
-def compare_values(operator: str, a, b) -> bool:
+def compare_values(operator: str, value, criterion) -> bool:
     """Compare two values based on the given operator."""
     if operator not in OPERATORS:
         raise ValueError(f"Unsupported operator: {operator}")
-    return OPERATORS[operator](a, b)
+    return OPERATORS[operator](value, criterion)
 
 
 def has_attributes(attributes: list, cls: type) -> bool:
