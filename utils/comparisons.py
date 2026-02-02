@@ -45,3 +45,10 @@ def is_match(attributes: dict, class_instance: object) -> bool:
         if compare_values(operator, attribute, value) is False:
             return False
     return True
+
+
+def find(search_attributes: dict, cls: type, class_instances: list) -> list:
+    """Find all class instances that match the given attribute conditions."""
+    if not has_attributes(list(search_attributes.keys()), cls):
+        return []
+    return [obj for obj in class_instances if is_match(search_attributes, obj)]
