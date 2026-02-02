@@ -7,15 +7,15 @@ OPERATORS = {
     ">": lambda a, b: a > b,
     ">=": lambda a, b: a >= b,
     "in": lambda a, b: a in b,
-    "any_in": lambda a, b: any(item in b for item in a),
-    "all_in": lambda a, b: all(item in b for item in a),
-    "not any_in": lambda a, b: all(item not in b for item in a),
-    "not all_in": lambda a, b: any(item not in b for item in a),
-    "not in": lambda a, b: a not in b,
+    "anyInList": lambda a, b: any(item in b for item in a),
+    "allInList": lambda a, b: all(item in b for item in a),
+    "not_anyInList": lambda a, b: all(item not in b for item in a),
+    "not_allInList": lambda a, b: any(item not in b for item in a),
+    "not_in": lambda a, b: a not in b,
     "contains": lambda a, b: b in a,
-    "not contains": lambda a, b: b not in a,
-    "starts with": lambda a, b: a.startswith(b),
-    "ends with": lambda a, b: a.endswith(b),
+    "not_contains": lambda a, b: b not in a,
+    "startsWith": lambda a, b: a.startswith(b),
+    "endsWith": lambda a, b: a.endswith(b),
 }
 
 
