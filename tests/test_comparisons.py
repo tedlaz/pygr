@@ -1,6 +1,6 @@
 import pytest
 
-from utils.comparisons import compare_values
+from utils.comparisons import compare_values, find
 
 
 @pytest.mark.parametrize(
@@ -23,3 +23,28 @@ from utils.comparisons import compare_values
 )
 def test_compare_values(operator, a, b, expected):
     assert compare_values(operator, a, b) == expected
+
+
+def test_find():
+    from dataclasses import dataclass
+
+    @dataclass
+    class TestClass:
+        id: int
+        name: str
+        tags: list
+
+    instances = [
+        TestClass(1, "Alice", ["tag1", "tag2"]),
+        TestClass(2, "Bob", ["tag2", "tag3"]),
+        TestClass(3, "Charlie", ["tag1", "tag3"]),
+    ]
+    search_attrs = {
+        "tags": ("anyInList", ["tag1"]),
+        "name": ("startsWith", "A"),
+    }
+    results = find(
+        search_attributes=search_attrs, class_=TestClass, class_instances=instances
+    )
+    assert len(results) == 1
+    assert results[0].name == "Alice"

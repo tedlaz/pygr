@@ -47,8 +47,14 @@ def is_match(attributes: dict, class_instance: object) -> bool:
     return True
 
 
-def find(search_attributes: dict, cls: type, class_instances: list) -> list:
-    """Find all class instances that match the given attribute conditions."""
-    if not has_attributes(list(search_attributes.keys()), cls):
+def find(*, search_attributes: dict, class_: type, class_instances: list) -> list:
+    """Find all class instances that match the given attribute conditions.
+    parameters:
+        search_attributes: A dictionary where keys are attribute names and values are tuples of (operator, value).
+        class_: The class type of the instances to be searched.
+        class_instances: A list of class instances to search through.
+    returns: A list of class instances that match all the specified attribute conditions.
+    """
+    if not has_attributes(list(search_attributes.keys()), class_):
         return []
     return [obj for obj in class_instances if is_match(search_attributes, obj)]
