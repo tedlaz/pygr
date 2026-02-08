@@ -206,3 +206,63 @@ def time_range(trange: str) -> tuple[datetime, datetime]:
 def day_night_hours_from_range(trange: str) -> DayNightHours:
     dfrom, dto = time_range(trange)
     return daynight_hours(dfrom, dto)
+
+
+def misthos_hour_diff(year: int, misthos: float):
+    hour = misthos / 25 * 6 / 40
+    oktaoro = hour * 8
+    total_delta = 0
+    total_days = 0
+    for month in range(1, 13):
+        days = month_monday2friday_days(year, month)
+        apodoxes = days * oktaoro
+        delta = misthos - apodoxes
+        total_delta = total_delta + delta
+        total_days += days
+    return year, total_days, round(total_delta, 2)
+
+
+def orthodox_easter(year: int) -> date:
+    """
+    Υπολογισμός Ορθόδοξου Πάσχα (Gregorian ημερομηνία)
+    με παραλλαγή του Meeus για το Ιουλιανό Πάσχα + διόρθωση 13 ημερών (1900–2099).
+    """
+    # Meeus Julian algorithm για Πάσχα στο Ιουλιανό ημερολόγιο
+    a = year % 4
+    b = year % 7
+    c = year % 19
+    d = (19 * c + 15) % 30
+    e = (2 * a + 4 * b - d + 34) % 7
+    month = (d + e + 114) // 31  # 3 = Μάρτιος, 4 = Απρίλιος (Ιουλιανό)
+    day = ((d + e + 114) % 31) + 1
+
+    julian_easter = date(year, month, day)
+
+    # Μετατροπή σε Γρηγοριανό: +13 ημέρες για 1900–2099
+    gregorian_easter = julian_easter + timedelta(days=13)
+    return gregorian_easter
+
+
+def greek_holidays(year: int) -> dict:
+    pascha = orthodox_easter(year)
+
+    clean_monday = pascha - timedelta(days=48)
+    good_friday = pascha - timedelta(days=2)
+    easter_monday = pascha + timedelta(days=1)
+    holy_spirit_monday = pascha + timedelta(days=50)
+
+    return {
+        "Πρωτοχρονιά": date(year, 1, 1),
+        "Θεοφάνεια": date(year, 1, 6),
+        "Επανάσταση του 1821": date(year, 3, 25),
+        "Πρωτομαγιά": date(year, 5, 1),
+        "Κοίμηση της Θεοτόκου": date(year, 8, 15),
+        "Επέτειος του Όχι": date(year, 10, 28),
+        "Χριστούγεννα": date(year, 12, 25),
+        "Σύναξη της Θεοτόκου": date(year, 12, 26),
+        "Καθαρά Δευτέρα": clean_monday,
+        "Μεγάλη Παρασκευή": good_friday,
+        "Κυριακή του Πάσχα": pascha,
+        "Δευτέρα του Πάσχα": easter_monday,
+        "Δευτέρα του Αγίου Πνεύματος": holy_spirit_monday,
+    }

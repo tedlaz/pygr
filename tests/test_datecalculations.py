@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 import pytest
 
@@ -7,9 +7,12 @@ from utils.datecalculations import (
     daynight_hours,
     delta_hours,
     do_overlap,
+    greek_holidays,
+    misthos_hour_diff,
     month_monday2friday_days,
     month_specific_days,
     month_specific_days_gr,
+    orthodox_easter,
     round_half,
     time_range,
 )
@@ -261,3 +264,35 @@ def test_day_night_hours_from_range(trange, expected_day_hours, expected_night_h
     assert hours.day_hours == expected_day_hours
     assert hours.night_hours == expected_night_hours
     assert hours.total_hours == expected_day_hours + expected_night_hours
+
+
+def test_monday_to_friday_days():
+    # Test a month with 31 days starting on a Monday (e.g., January 2024)
+    print("\n")
+    for yeara in range(2000, 2028):
+        year, t_days, t_delta = misthos_hour_diff(yeara, 1144)
+        print(f"Year: {year}, Total Days: {t_days}, Delta: {t_delta}")
+
+
+def test_orthodox_easter():
+    # Test known Orthodox Easter dates
+    assert orthodox_easter(2024) == date(2024, 5, 5)
+    assert orthodox_easter(2025) == date(2025, 4, 20)
+    assert orthodox_easter(2026) == date(2026, 4, 12)
+    assert orthodox_easter(2027) == date(2027, 5, 2)
+
+
+def test_greek_movable_holidays():
+    holidays_2024 = greek_holidays(2024)
+    assert holidays_2024["Καθαρά Δευτέρα"] == date(2024, 3, 18)
+    assert holidays_2024["Μεγάλη Παρασκευή"] == date(2024, 5, 3)
+    assert holidays_2024["Κυριακή του Πάσχα"] == date(2024, 5, 5)
+    assert holidays_2024["Δευτέρα του Πάσχα"] == date(2024, 5, 6)
+    assert holidays_2024["Δευτέρα του Αγίου Πνεύματος"] == date(2024, 6, 24)
+
+    holidays_2026 = greek_holidays(2026)
+    assert holidays_2026["Καθαρά Δευτέρα"] == date(2026, 2, 23)
+    assert holidays_2026["Μεγάλη Παρασκευή"] == date(2026, 4, 10)
+    assert holidays_2026["Κυριακή του Πάσχα"] == date(2026, 4, 12)
+    assert holidays_2026["Δευτέρα του Πάσχα"] == date(2026, 4, 13)
+    assert holidays_2026["Δευτέρα του Αγίου Πνεύματος"] == date(2026, 6, 1)
